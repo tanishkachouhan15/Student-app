@@ -1,15 +1,18 @@
-
 from flask import Flask, render_template, request, redirect, url_for
 import sqlite3
+import os
 
 app = Flask(__name__)
 
+# ✅ Fix database path for deployment
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DB_PATH = os.path.join(BASE_DIR, "students.db")
+
 
 def get_db_connection():
-    conn = sqlite3.connect('students.db')
+    conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     return conn
-
 
 
 def init_db():
@@ -18,7 +21,7 @@ def init_db():
 
     cur.execute('''
         CREATE TABLE IF NOT EXISTS students (
-            id INTEGER PRIMARY KEY,
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL,
             age INTEGER,
             course TEXT
@@ -50,7 +53,6 @@ def index():
     return render_template('index.html', students=students)
 
 
-
 @app.route('/add', methods=['GET', 'POST'])
 def add():
     if request.method == 'POST':
@@ -61,13 +63,10 @@ def add():
         conn = get_db_connection()
         cur = conn.cursor()
 
-        # 🔥 Get next ID manually
-        cur.execute("SELECT COUNT(*) FROM students")
-        next_id = cur.fetchone()[0] + 1
-
+        # ✅ AUTO ID (fixed)
         cur.execute(
-            "INSERT INTO students (id, name, age, course) VALUES (?, ?, ?, ?)",
-            (next_id, name, age, course)
+            "INSERT INTO students (name, age, course) VALUES (?, ?, ?)",
+            (name, age, course)
         )
 
         conn.commit()
@@ -78,30 +77,12 @@ def add():
     return render_template('add.html')
 
 
-
 @app.route('/delete/<int:id>')
 def delete(id):
     conn = get_db_connection()
     cur = conn.cursor()
 
-    
     cur.execute("DELETE FROM students WHERE id = ?", (id,))
-    conn.commit()
-
-    
-    cur.execute("SELECT * FROM students")
-    students = cur.fetchall()
-
-    
-    cur.execute("DELETE FROM students")
-
-    
-    for i, student in enumerate(students, start=1):
-        cur.execute(
-            "INSERT INTO students (id, name, age, course) VALUES (?, ?, ?, ?)",
-            (i, student['name'], student['age'], student['course'])
-        )
-
     conn.commit()
     conn.close()
 
@@ -135,6 +116,6 @@ def update(id):
     return render_template('update.html', student=student)
 
 
-
+# ✅ IMPORTANT FOR RENDER
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=10000)
