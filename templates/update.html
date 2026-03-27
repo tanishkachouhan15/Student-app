@@ -1,0 +1,103 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Update Student</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .form-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            padding: 30px;
+            border-radius: 15px;
+            width: 350px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            color: white;
+            text-align: center;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 8px;
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(45deg, #00c6ff, #0072ff);
+            color: white;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 15px;
+            text-decoration: none;
+            color: white;
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .back-btn:hover {
+            opacity: 1;
+        }
+    </style>
+
+</head>
+
+<body>
+
+<div class="form-container">
+
+    <h2>✏️ Update Student</h2>
+
+    <form method="POST">
+        <input type="text" name="name" value="{{ student['name'] }}" required>
+        <input type="number" name="age" value="{{ student['age'] }}" required>
+        <input type="text" name="course" value="{{ student['course'] }}" required>
+
+        <button type="submit">Update Student</button>
+    </form>
+
+    <a href="{{ url_for('index') }}" class="back-btn">← Back to Home</a>
+
+</div>
+
+</body>
+</html>
+
